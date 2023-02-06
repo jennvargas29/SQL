@@ -1,0 +1,49 @@
+--Create a book store database
+
+CREATE TABLE bookStore (id INTEGER PRIMARY KEY, name TEXT, author TEXT, genre TEXT, price INTEGER, popularity INTEGER);
+
+INSERT INTO bookStore VALUES 
+(1, "Then She Was Gone","Lisa Jewell", "Drama", 12.99, 32), 
+(2, "Fairy Tale", "Stephen King", "Fiction", 10.99, 29), 
+(3, "Horse","Geraldine Brooks", "Fiction", 12.99, 45), 
+(4, "Harry Potter And The Sorcerer's Stone ", "J.K. Rowling", "Fantasy", 13.49, 98), 
+(5, "Before We Were Yours", " Lisa Wingate", "Drama", 15.99, 24), 
+(6, "The Great Gatsby", "  F. Scott Fitzgerald", "Fiction", 15.50, 80), 
+(7, "Game of Thrones - Fire & Blood", " George R.R. Martin", "Fantasy", 15.99, 87), 
+(8, "Click", " Kayla Miller", "Drama", 13.50, 38), 
+(9, "Harry Potter And The Prisoner Of Azkaban", "J.K. Rowling", "Fantasy", 12.99, 85),
+(10,"Game of Thrones-House of the Dragon", "George R.R. Martin", "Fantasy",20.99, 90),
+(11, "The House of the Spirits", "Isabel Allende", "Novel", 11.99, 36), 
+(12,"Harry Potter And the Order of the Phoenix", "J.K. Rowling","Fantasy",17.99, 92), 
+(13, "The Diary of Anne Frank", "Anne Frank", "Autobiography", 10.50, 55), 
+(14, "Little Women", "Louisa May Alcott", "Novel", 10.99, 28), 
+(15, "Pride and Prejudice", "Jane Austen", "Novel", 12.99, 57), 
+(16, "Born a Crime", "Trevor Noah", "Autobiography", 11.99, 30), 
+(17, "One Hundred Years of Solitude", "Gabriel Garcia Marquez", "Novel", 14.50, 45)
+;
+
+
+
+--Display the database ordered by price. 
+SELECT * FROM bookStore
+ORDER BY price desc; 
+
+
+--What are the most 8 popular books? 
+SELECT name, price, popularity
+FROM bookStore
+order by popularity desc
+limit 8; 
+
+--What are the cheapest books from and under $12.99?
+SELECT name, price
+FROM bookStore 
+WHERE price <= 12.99
+ORDER BY price;
+
+
+--What is the avg price of books in the novel genre? 
+SELECT AVG(price) "Avg 'Novel' book price"
+FROM bookStore
+WHERE genre = 'Novel'; 
+
