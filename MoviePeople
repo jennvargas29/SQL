@@ -1,0 +1,115 @@
+CREATE TABLE actors (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fullname TEXT,
+    age INTEGER);
+
+
+INSERT INTO actors (fullname, age)
+VALUES("Channing Tatum", 50);
+INSERT INTO actors (fullname, age)
+VALUES("Ben Affleck" , 50);
+INSERT INTO actors (fullname, age)
+VALUES("Ashton Kutcher", 45);
+INSERT INTO actors (fullname, age)
+VALUES("Brad Pitt", 34);
+INSERT INTO actors (fullname, age)
+VALUES("Tom Cruise", 34);
+INSERT INTO actors (fullname, age)
+VALUES("Stephen Moyer", 34);
+INSERT INTO actors (fullname, age)
+VALUES("Kit Harington", 34);
+INSERT INTO actors (fullname, age)
+VALUES("Michael Fassbender", 34);
+INSERT INTO actors (fullname, age)
+VALUES("Hugh Dancy", 34);
+INSERT INTO actors (fullname, age)
+VALUES("Adam Brody", 34);
+INSERT INTO actors (fullname, age)
+VALUES("Ryan Reynolds", 34); 
+
+
+CREATE TABLE actress (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    actress_id INTEGER,
+    fullname TEXT,
+    age INTEGER);
+
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(9, "Claire Danes" , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(1,"Jenna Dewan" , 75);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(3, "Mila Kunis " , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(4, "Angelina Jolie " , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(5, "Nicole Kidman " , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(2, "Jennifer Garder " , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(11, "Blake Lively" , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(6, "Anna Paquin " , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(8, "Alicia Vikander" , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(10,"Leighton Meester" , 39);
+INSERT INTO actress (actress_id, fullname, age)
+VALUES(7, "Rose Leslie" , 39);
+
+
+
+CREATE TABLE movies (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    movies_id INTEGER,
+    name TEXT,
+    year INTEGER);
+
+
+INSERT INTO movies (movies_id, name, year)
+VALUES(3,"That '70s Show" , 1998);
+INSERT INTO movies (movies_id, name, year)
+VALUES(8,"The Light Between Oceans" , 2016);
+INSERT INTO movies (movies_id, name, year)
+VALUES(7,"Game of Thrones" , 2011);
+INSERT INTO movies (movies_id, name, year)
+VALUES(6,"True Blood" , 2008);
+INSERT INTO movies (movies_id, name, year)
+VALUES(2,"Pearl Harbour", 2001);
+INSERT INTO movies (movies_id, name, year)
+VALUES(5,"Days of Thunder " , 1990);
+INSERT INTO movies (movies_id, name, year)
+VALUES(4,"Mr and Mrs Smith " , 2003);
+INSERT INTO movies (movies_id, name, year)
+VALUES(1,"Step Up" , 2006);
+INSERT INTO movies (movies_id, name, year)
+VALUES(9,"Evening" , 2006);
+INSERT INTO movies (movies_id, name, year)
+VALUES(10,"The Oranges" , 2011);
+INSERT INTO movies (movies_id, name, year)
+VALUES(11,"Green Lantern " , 2011);
+
+-- Actors Who Married Their Co-stars 
+SELECT o.fullname AS "actor's name" , e.fullname AS "actress's name"
+FROM actors o
+JOIN actress e
+ON o.id = e.actress_id ;
+
+
+--What movies are they in? Are they married to each other?
+SELECT o.fullname AS "actor's name" , e.fullname AS "actress's name", movies.name AS "movie's name"
+FROM actors o
+JOIN actress e
+ON o.id = e.actress_id 
+JOIN movies
+ON e.actress_id = movies.movies_id;
+
+
+-- What movies were released after the year 2000?
+SELECT name, year
+FROM movies
+WHERE year > 2000
+ORDER BY year asc;
+
+-- When was more than one movie released?
+SELECT year, COUNT(name) AS "quantity of movies"
+FROM movies
+GROUP BY year
+HAVING COUNT(name) > 1;
