@@ -1,0 +1,137 @@
+--A community college uses the following tables to track each student’s progress:
+
+Drop Database test_database; 
+CREATE DATABASE test_database;
+USE test_database;
+
+CREATE TABLE Class(
+	class_id INT NOT NULL,
+    class_name VARCHAR(50),
+    PRIMARY KEY(class_id)
+);
+INSERT INTO Class(class_id, class_name)
+VALUES
+(101, 'Geometry'),
+(102, 'English'),
+(103, 'Physics');
+
+/*SELECT * FROM Class;*/
+
+CREATE TABLE Student(
+	student_id INT NOT NULL,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    PRIMARY KEY(student_id)
+);
+INSERT INTO Student(student_id, first_name, last_name)
+VALUES
+(500, 'Robert', 'Smith'),
+(762, 'Frank','Carter'),
+(881, 'Joseph','Evans'),
+(933, 'Anne', 'Baker');
+/*SELECT * FROM Student*/
+
+/*DropTable Enrollment;*/
+CREATE TABLE Enrollment(
+	class_id INT NOT NULL,
+    student_id INT NOT NULL,
+    semester VARCHAR(50) NOT NULL, /*AUTO_INCREMENT,*/
+	grade VARCHAR(5),
+   FOREIGN KEY(student_id) REFERENCES Student(student_id),
+    FOREIGN KEY(class_id) REFERENCES Class(class_id)
+);
+INSERT INTO Enrollment(class_id, student_id, semester, grade)
+VALUES
+(101, 500, 'Fall 2019', 'A'),
+(102, 500, 'Fall 2019', 'B'),
+(103, 762, 'Fall 2019', 'F'),
+(101, 881, 'Spring 2020', 'B'),
+(102, 881, 'Fall 2020', 'B'),
+(103, 762, 'Spring 2021', NULL);
+
+
+USE test_database;
+SELECT * FROM Enrollment;
+SELECT * FROM Student;
+SELECT * FROM Class;
+
+-- Prompt 1
+-- Return all columns from the Enrollment table where the grade of A or B was assigned
+SELECT * FROM Enrollment
+WHERE grade = 'A' OR grade = 'B';
+
+-- Write a query to return  with the first and last names of each student who has taken Geometry
+SELECT first_name, last_name 
+FROM Student  
+	INNER JOIN Enrollment 
+		ON Student.student_id = Enrollment.student_id
+	INNER JOIN Class
+		ON Class.class_id = Enrollment.class_id
+WHERE class_name='Geometry';
+
+
+-- Return with all rows from the Enrollment table where the student has not been given a failing grade (F).  Include any rows where the grade has not yet been assigned.
+SELECT * FROM Enrollment
+WHERE grade <> 'F' OR grade IS NULL;
+
+
+-- Return the first and last names of every student in the Student table. If a student has ever enrolled in English, please specify the grade that they received.  You need only include the Enrollment and Student tables and may specify the class_id value of 102 for the English class. The query should return one row for each student (4 rows) with nulls as grades for students who don't have a grade. 
+SELECT first_name, last_name
+FROM Student
+	LEFT JOIN Enrollment
+		ON Student.student_id = Enrollment.student_id
+WHERE Enrollment.class_id = '102';
+
+-- Write a query to return the class names and the total number of students who have ever been enrolled in each class. If a student has enrolled in the same class twice, it is OK to count him twice in your results.
+SELECT class_name,count(*),student_id 
+FROM Class
+	INNER JOIN Enrollment
+		ON Enrollment.class_id=Class.class_id
+GROUP BY class_name;
+
+
+-- Write a statement to update Robert Smith’s grade for the English class from a B to a B+.  Specify the student by his student ID, which is 500, and the English class by class ID 102.
+UPDATE Enrollment
+SET grade = 'B+'
+WHERE class_id = 102 AND student_id = 500; 
+
+
+-- Create an alternate statement to update Robert Smith’s grade in English to a B+, but for this version specify the student by first/last name, not by student ID.  This will require the use of a subquery
+UPDATE Enrollment
+SET grade = 'B+'
+WHERE class_id = 102 AND student_id IN (
+	SELECT student_id FROM Student
+    WHERE first_name = 'Robert' AND last_name = 'Smith');
+
+-- A new student name Michael Cronin enrolls in the Geometry class.  Construct a statement to add the new student to the Student table. (You can pick any value for the student_id, provided it doesn’t already exist in the table).
+INSERT INTO Student(student_id, first_name, last_name)
+VALUES(950, 'Micheal', 'Cronin');
+
+-- Add Michael Cronin’s enrollment in the Geometry class to the Enrollment table.  You may only specify names (e.g. “Michael”, “Cronin”, “Geometry”) and not numbers (e.g. student_id, class_num) in your statement.  You may use subqueries if desired, but the statement can also be written without the use of subqueries. Use ‘Spring 2020’ for the semester value.
+INSERT INTO Enrollment(class_id, student_id, semester)
+VALUES(
+	(SELECT class_id FROM Class 
+     WHERE class_name = 'Geometry'),
+	(SELECT student_id FROM Student
+	WHERE first_name = 'Micheal' AND last_name = 'Cronin'),'Spring 2020');
+
+-- Return the first and last names of all students who have not enrolled in any class. It is important to use a correlated subquery for this question. DO NOT use a JOIN.
+SELECT first_name, last_name FROM Student
+WHERE NOT EXISTS(
+	SELECT student_id
+    FROM Enrollment
+    WHERE Student. student_id = Enrollment.student_id);
+
+
+-- Return the same results as the previous question (first and last name of all students who have not enrolled in any class), but formulate your query using a non-correlated subquery. It is important to use a non-correlated subquery for this question. Please DO NOT use a JOIN.
+SELECT first_name, last_name FROM Student
+WHERE student_id NOT IN (
+	SELECT student_id
+    FROM Enrollment);
+    
+-- Write a statement to remove any rows from the Student table where the person has not enrolled in any classes.  You may use either a correlated or non-correlated subquery. Please DO NOT use a JOIN.
+DELETE FROM Student
+WHERE student_id NOT IN (
+	SELECT student_id
+    FROM Enrollment);
+SELECT * FROM Student;
