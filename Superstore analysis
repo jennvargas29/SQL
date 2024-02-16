@@ -1,0 +1,44 @@
+-- ordering items by proce from the most expensive to the chepeast.
+SELECT*
+FROM superstore
+ORDER BY price asc;
+
+
+-- showing some statistics from the store
+
+SELECT AVG (price) AS average_price
+FROM superstore;
+
+
+
+-- summing the total of the electronics category
+SELECT SUM(price) AS total_price
+FROM superstore
+WHERE category = "Electronics";
+
+-- summing the total of the kitchen supplies category
+SELECT SUM(stock_quantity) AS kitchen_quantity
+FROM superstore
+WHERE category = "Kitchen Supplies";
+
+
+SELECT AVG(price) AS average_price_kitchen
+FROM superstore
+WHERE category = 'Kitchen Supplies';
+
+
+-- Counting items in the store 
+SELECT COUNT(*) AS total_items 
+FROM superstore;
+
+-- What is the highest rated item in each category,
+-- along with its average rating?
+
+SELECT category, item_name AS highest_rated_item, average_rating AS max_average_rating
+FROM superstore
+WHERE (category, average_rating) IN (
+    SELECT category, MAX(average_rating) AS max_average_rating
+    FROM superstore
+    GROUP BY category);
+
+
